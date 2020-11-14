@@ -43,43 +43,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public double calculatePrice(ProductPriceRequest productPriceRequest) {
+    public ProductPriceResponse calculatePrice(ProductPriceRequest productPriceRequest) {
         Product product = productRepository.findById(productPriceRequest.getProductId())
                 .orElseThrow(() -> new RuntimeException("Error: Product not found."));
-
-        int units = 0;
-        int cartons = 0;
-
         int qty = productPriceRequest.getQty();
         int noupc = product.getNoOfUnitsPerCarton();
         switch (productPriceRequest.getPurchaseType()){
             case UNIT:
-                cartons = qty/noupc;
-                if(cartons > 0){
-                    units = qty % noupc;
-                } else {
-                    cartons = 0;
-                    units = qty;
-                }
-//                return calculatePriceForUnits( product.getCartonCost(), qty, noupc);
-                break;
+                return calculatePriceForUnits( product.getCartonCost(), qty, noupc);
             case CARTON:
-                cartons = qty;
+                return  new ProductPriceResponse(qty  * noupc, qty, 0,
+                        calculatePrice(qty, 0, product.getCartonCost(), noupc));
         }
-        return calculatePrice(cartons, units, product.getCartonCost(), noupc);
-    }
-
-    private ProductPriceResponse calculatePriceForUnits(float cartonCost, int qty, int noupc){
-        int cartons = qty/noupc;
-        int units = 0;
-
-        if(cartons > 0){
-            units = qty % noupc;
-        } else {
-            cartons = 0;
-            units = qty;
-        }
-        return  new ProductPriceResponse(qty, cartons, units,calculatePrice(cartons, units, cartonCost, noupc));
+        return null;
     }
 
     @Override
@@ -102,5 +78,18 @@ public class ProductServiceImpl implements ProductService {
             totalPrice *= 0.9;
         }
         return totalPrice;
+    }
+
+    private ProductPriceResponse calculatePriceForUnits(float cartonCost, int qty, int noupc){
+        int cartons = qty/noupc;
+        int units = 0;
+
+        if(cartons > 0){
+            units = qty % noupc;
+        } else {
+            cartons = 0;
+            units = qty;
+        }
+        return  new ProductPriceResponse(qty, cartons, units,calculatePrice(cartons, units, cartonCost, noupc));
     }
 }
