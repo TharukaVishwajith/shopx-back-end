@@ -64,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new RuntimeException("Error: Product not found."));
 
         List<ProductPriceResponse> priceList = new ArrayList<>();
-       for(int i = 0; i < units; i++){
+       for(int i = 1; i <= units; i++){
            priceList.add(calculatePriceForUnits(product.getCartonCost(),i,product.getNoOfUnitsPerCarton()));
        }
        return priceList;
