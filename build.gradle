@@ -17,6 +17,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.security:spring-security-test'
+	compile group: 'org.liquibase', name: 'liquibase-core', version: '4.2.0'
 	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 	compile group: 'javax.validation', name: 'validation-api', version: '2.0.0.Final'
 	runtimeOnly 'mysql:mysql-connector-java'
